@@ -103,3 +103,39 @@
 
 </body>
 </html>
+<script>
+  // WebSocket URL for Primal relay
+  const relayUrl = 'wss://relay.primal.net';
+
+  // Create a WebSocket connection
+  const socket = new WebSocket(relayUrl);
+
+  socket.onopen = () => {
+    console.log("Connected to Nostr relay");
+
+    // Example: Sending a simple message to the relay
+    const message = JSON.stringify({
+      type: 'text',
+      content: 'Hello, Nostr!',
+      pubkey: 'your_pubkey_here', // Use a real public key for Nostr
+      event: 'message'
+    });
+
+    socket.send(message);
+  };
+
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    console.log("Received message:", message);
+    
+    // You can update the page with received messages here
+  };
+
+  socket.onerror = (error) => {
+    console.error("WebSocket Error:", error);
+  };
+
+  socket.onclose = () => {
+    console.log("Disconnected from Nostr relay");
+  };
+</script>
