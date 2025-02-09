@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>speak and translate at the speed of thought</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black; /* black background */
+            color: white; /* white text */
+            display: flex;
+            justify-content: center; /* center horizontally */
+            align-items: center; /* center vertically */
+            height: 100vh; /* full viewport height */
+            text-align: center; /* center text */
+            position: relative; /* allow button to be positioned */
+            flex-direction: column;
+        }
+        .hero {
+            padding: 20px;
+            max-width: 600px; /* limit the width */
+            width: 100%;
+        }
+        .hero h1 {
+            font-size: 32px; /* larger font size for header */
+            font-weight: bold; /* Bold header text */
+            margin-bottom: 5px; /* reduced space between line 1 and line 2 */
+        }
+        .instruction {
+            font-size: 18px; /* increased font size */
+            margin-bottom: 10px; /* space below */
+            color: white;
+        }
+        .icons {
+            display: flex;
+            justify-content: center; /* centers icons */
+            gap: 30px; /* space between icons */
+            margin-bottom: 10px; /* pulled icons closer to built-with text */
+        }
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .icon {
+            font-size: 35px;
+        }
+        .built-with {
+            font-size: 18px; /* increased to match the instruction text */
+            color: #ff9900; /* Orange color */
+            margin-top: 15px; /* added extra space */
+            line-height: 1.4; /* Ensures 1 space between lines */
+        }
+        .cta-button {
+            background-color: #ff9900;
+            padding: 10px 20px;
+            color: white;
+            font-size: 12px; /* font size 12 for the button */
+            text-decoration: none;
+            border-radius: 5px;
+            text-transform: uppercase; /* makes button text all caps */
+            font-weight: bold; /* Bold button text */
+            position: absolute; /* Position button in top-right corner */
+            top: 20px; /* position from top */
+            right: 20px; /* position from right */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Test It Out Button (Top-Right) -->
+    <a href="#try" class="cta-button">test it out</a>
+
+    <!-- Main Header -->
+    <div class="hero">
+        <h1>communicate at the speed of thought</h1>
+        <p class="instruction">speak into the app → instant translation → supports 96 languages</p>
+    </div>
+
+    <!-- Icons Section -->
+    <div class="icons">
+        <div class="icon-container">
+            <div class="icon">🎤</div>
+        </div>
+        <div class="icon-container">
+            <div class="icon">🔄</div>
+        </div>
+        <div class="icon-container">
+            <div class="icon">🌍</div>
+        </div>
+    </div>
+
+    <!-- Built With + Working Toward Visual Language Input -->
+    <div class="built-with">
+        built with Whisper & Mistral AI  
+        <br>
+        [working toward visual language input beginning with American Sign Language]
+    </div>
+
+</body>
+</html>
