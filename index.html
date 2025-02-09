@@ -74,8 +74,10 @@
 
     <!-- Test It Out Button (Top-Right) -->
     <a href="#try" class="cta-button">test it out</a>
-<!-- Alby Ext button -->
-<button id="alby-ext-button">Alby Ext</button>
+    
+    <!-- Alby Ext button -->
+    <button id="alby-ext-button">Alby Ext</button>
+
     <!-- Main Header -->
     <div class="hero">
         <h1>communicate at the speed of thought</h1>
@@ -103,7 +105,7 @@
     </div>
 
 </body>
-</html>
+
 <script>
   // WebSocket URL for Damus relay
   const relayUrl = 'wss://nostr.moltenlamb.xyz';
@@ -139,4 +141,25 @@
   socket.onclose = () => {
     console.log("Disconnected from Nostr relay");
   };
+
+  // Alby Integration - Get Public Key
+  document.getElementById("alby-ext-button").addEventListener("click", async () => {
+    if (window.nostr) {
+      try {
+        const pubkey = await window.nostr.getPublicKey();
+        console.log("Connected to Alby extension. Public key:", pubkey);
+        
+        // You can use this public key to interact with Nostr network here
+        alert("Connected to Alby! Public Key: " + pubkey);
+      } catch (error) {
+        console.error("Error with Alby extension:", error);
+        alert("Could not connect to Alby. Make sure the extension is installed.");
+      }
+    } else {
+      alert("Alby extension is not installed.");
+    }
+  });
+
 </script>
+
+</html>
