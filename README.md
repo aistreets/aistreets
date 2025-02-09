@@ -1,1 +1,1 @@
-Access to language is key to creating more accessible experiences for everyone. This tool focuses on real-time multilingual communicatioh, which can ultimately open up new possibilities for global collaboration/connection.
+Access to language is key to creating more accessible experiences for everyone. This tool focuses on real-time multilingual communication, which can ultimately open up new possibilities for global collaboration/connection.
