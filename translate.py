@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Function to load MarianMT model
 def load_model(target_language):
-    model_name = f'Helsinki-NLP/opus-mt-en-{target_language}'  # Example: Translate from detected language to target_language
+    model_name = f'Helsinki-NLP/opus-mt-en-{target_language}'  # Translate from detected language to target_language
     model = MarianMTModel.from_pretrained(model_name)
     tokenizer = MarianTokenizer.from_pretrained(model_name)
     return model, tokenizer
