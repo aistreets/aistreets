@@ -132,27 +132,23 @@
         function processTranscription(text) {
             updateStatus("Processing...");
             const selectedLanguage = document.getElementById('language-select').value;
-            const translatedText = translateText(text, selectedLanguage);
 
-            updateOutput(translatedText);
-            speakText(translatedText);
-
-            updateStatus("Done processing.");
-        }
-
-        function translateText(text, targetLanguage) {
-            if (targetLanguage === 'es') {
-                return `${text}`;
-            } else if (targetLanguage === 'fr') {
-                return `${text}`;
-            } else if (targetLanguage === 'de') {
-                return `${text}`;
-            } else if (targetLanguage === 'it') {
-                return `${text}`;
-            } else if (targetLanguage === 'af') {
-                return `${text}`;
-            }
-            return text; // Default to original text if no translation is available
+            // Send transcription and language to the backend for translation
+            fetch('/translate', {  // This is where it sends the POST request to the backend
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text, targetLanguage: selectedLanguage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateOutput(data.translatedText);  // Display translated text
+                speakText(data.translatedText);     // Speak the translated text
+                updateStatus("Done processing.");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                updateStatus("Error processing.");
+            });
         }
 
         function updateStatus(status) {
@@ -167,6 +163,7 @@
             const speech = new SpeechSynthesisUtterance(text);
             const selectedLanguage = document.getElementById('language-select').value;
 
+            // Set language for speech synthesis
             if (selectedLanguage === 'es') {
                 speech.lang = 'es-ES';
             } else if (selectedLanguage === 'fr') {
