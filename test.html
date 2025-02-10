@@ -80,7 +80,7 @@
         // Handle speech result (each time a chunk of speech is transcribed)
         recognition.onresult = function(event) {
             const transcript = event.results[event.results.length - 1][0].transcript;
-            processTranscription(transcript);
+            processTranscription(transcript);  // Send each chunk for processing and translation
         };
 
         // Handle when recognition stops (end of speech)
