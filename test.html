@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Speech to Translation</title>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,22 +21,29 @@
         }
         h1 {
             font-size: 36px;
+            margin-bottom: 20px;
         }
-        #output {
+        #output, #summary, #expanded {
             margin-top: 20px;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
+            color: #333;
         }
         #start-recording {
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: #ff9900;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         #start-recording:hover {
             background-color: #e68900;
+        }
+        #status {
+            font-size: 16px;
+            color: #777;
         }
     </style>
 </head>
@@ -45,9 +53,55 @@
     <p>Speak into the app → Instant translation → Supports 96 languages</p>
     
     <button id="start-recording">Start Recording</button>
-    
-    <div id="output"></div>
+    <div id="status">Click "Start Recording" to begin speaking</div>
 
-    <script src="test.js"></script>
+    <div id="output"></div>
+    <div id="summary"></div>
+    <div id="expanded"></div>
+
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.lang = 'en-US';
+
+        // When the user clicks the button to start speaking
+        document.getElementById('start-recording').addEventListener('click', () => {
+            recognition.start();
+            updateStatus("Listening...");
+        });
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[event.results.length - 1][0].transcript;
+            document.getElementById('output').innerText = `You said: ${transcript}`;
+            
+            // Process the transcription
+            processTranscription(transcript);
+        };
+
+        function processTranscription(text) {
+            updateStatus("Processing...");
+            // Summarize the transcribed text
+            const summarizedText = summarizeText(text);
+            const expandedText = expandText(summarizedText);
+
+            // Show summary and expansion
+            document.getElementById('summary').innerText = `Summary: ${summarizedText}`;
+            document.getElementById('expanded').innerText = `Expanded Idea: ${expandedText}`;
+
+            updateStatus("Done processing.");
+        }
+
+        function summarizeText(text) {
+            return `Summarized: ${text.slice(0, 50)}...`; // Simplified for demo
+        }
+
+        function expandText(text) {
+            return `Expanded idea based on: ${text}`; // Simplified for demo
+        }
+
+        function updateStatus(status) {
+            document.getElementById('status').innerText = status;
+        }
+    </script>
 </body>
 </html>
