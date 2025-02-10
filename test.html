@@ -132,27 +132,31 @@
         function processTranscription(text) {
             updateStatus("Processing...");
             const selectedLanguage = document.getElementById('language-select').value;
-            
-            // Send the transcription to the backend for translation
-            fetch(`/translate`, {  // Assuming you have an endpoint for translation
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, targetLanguage: selectedLanguage })
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateOutput(data.translatedText);  // Display translated text
-                speakText(data.translatedText);     // Speak the translated text
-                updateStatus("Done processing.");
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                updateStatus("Error processing.");
-            });
+            const translatedText = translateText(text, selectedLanguage);
+
+            updateOutput(translatedText);
+            speakText(translatedText);
+
+            updateStatus("Done processing.");
+        }
+
+        function translateText(text, targetLanguage) {
+            if (targetLanguage === 'es') {
+                return `${text}`;
+            } else if (targetLanguage === 'fr') {
+                return `${text}`;
+            } else if (targetLanguage === 'de') {
+                return `${text}`;
+            } else if (targetLanguage === 'it') {
+                return `${text}`;
+            } else if (targetLanguage === 'af') {
+                return `${text}`;
+            }
+            return text; // Default to original text
         }
 
         function updateStatus(status) {
-            document.getElementById('output').innerText = status;
+            // Optionally update status message if needed
         }
 
         function updateOutput(output) {
@@ -172,6 +176,8 @@
                 speech.lang = 'de-DE';
             } else if (selectedLanguage === 'it') {
                 speech.lang = 'it-IT';
+            } else if (selectedLanguage === 'af') {
+                speech.lang = 'af-ZA';
             }
 
             window.speechSynthesis.speak(speech);
