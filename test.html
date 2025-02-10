@@ -68,8 +68,8 @@
 
     <script>
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.continuous = false;
-        recognition.lang = 'en-US';
+        recognition.continuous = true;  // Allow continuous listening
+        recognition.lang = 'en-US';  // Set default language for transcription
 
         // When the user clicks the button to start speaking
         document.getElementById('start-recording').addEventListener('click', () => {
@@ -77,15 +77,18 @@
             updateStatus("Listening...");
         });
 
+        // Handle speech result (each time a chunk of speech is transcribed)
         recognition.onresult = function(event) {
             const transcript = event.results[event.results.length - 1][0].transcript;
             processTranscription(transcript);
         };
 
+        // Handle when recognition stops (end of speech)
         recognition.onend = function() {
             updateStatus("Stopped listening.");
         };
 
+        // Process transcription and send it to backend for translation
         function processTranscription(text) {
             updateStatus("Processing...");
             const selectedLanguage = document.getElementById('language-select').value;
@@ -100,7 +103,6 @@
             .then(data => {
                 updateOutput(data.translatedText);  // Display translated text
                 speakText(data.translatedText);     // Speak the translated text
-                updateStatus("Done processing.");
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -116,6 +118,7 @@
             document.getElementById('output').innerText = output;
         }
 
+        // Function to speak the translated text out loud
         function speakText(text) {
             const speech = new SpeechSynthesisUtterance(text);
             const selectedLanguage = document.getElementById('language-select').value;
@@ -136,7 +139,7 @@
             window.speechSynthesis.speak(speech);
         }
 
-        document.getElementById('language-count').innerText = 6; // Update the language count
+        document.getElementById('language-count').innerText = 6; // Set the language count to 6
     </script>
 </body>
 </html>
