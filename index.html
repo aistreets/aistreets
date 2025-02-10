@@ -3,103 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>speak and translate at the speed of thought</title>
+    <title>AI Speech-to-Text and Summarization</title>
     
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: black; /* black background */
-            color: white; /* white text */
+            background-color: #f4f4f4;
+            color: black;
             display: flex;
-            justify-content: center; /* center horizontally */
-            align-items: center; /* center vertically */
-            height: 100vh; /* full viewport height */
-            text-align: center; /* center text */
-            position: relative; /* allow button to be positioned */
-            flex-direction: column;
-        }
-        .hero {
-            padding: 20px;
-            max-width: 600px; /* limit the width */
-            width: 100%;
-        }
-        .hero h1 {
-            font-size: 32px; /* larger font size for header */
-            font-weight: bold; /* Bold header text */
-            margin-bottom: 5px; /* reduced space between line 1 and line 2 */
-        }
-        .instruction {
-            font-size: 18px; /* increased font size */
-            margin-bottom: 10px; /* space below */
-            color: white;
-        }
-        .icons {
-            display: flex;
-            justify-content: center; /* centers icons */
-            gap: 30px; /* space between icons */
-            margin-bottom: 10px; /* pulled icons closer to built-with text */
-        }
-        .icon-container {
-            display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            height: 100vh;
+            text-align: center;
+            flex-direction: column;
         }
-        .icon {
-            font-size: 35px;
+        h1 {
+            font-size: 36px;
         }
-        .built-with {
-            font-size: 18px; /* increased to match the instruction text */
-            color: #ff9900; /* Orange color */
-            margin-top: 15px; /* added extra space */
-            line-height: 1.4; /* Ensures 1 space between lines */
+        #output, #summary, #expanded, #concept-map {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
         }
-        .cta-button {
-            background-color: #ff9900;
+        button {
             padding: 10px 20px;
+            background-color: #ff9900;
             color: white;
-            font-size: 12px; /* font size 12 for the button */
-            text-decoration: none;
+            border: none;
             border-radius: 5px;
-            text-transform: uppercase; /* makes button text all caps */
-            font-weight: bold; /* Bold button text */
-            position: absolute; /* Position button in top-right corner */
-            top: 20px; /* position from top */
-            right: 20px; /* position from right */
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e68900;
         }
     </style>
 </head>
 <body>
 
-    <!-- Test It Out Button (Top-Right) -->
-    <a href="test.html" class="cta-button">test it out</a>
+    <h1>Test AI Speech-to-Text and Summarization</h1>
     
-    <!-- Main Header -->
-    <div class="hero">
-        <h1>communicate at the speed of thought</h1>
-        <p class="instruction">speak into the app → instant translation → supports 96 languages</p>
-    </div>
+    <button id="start-recording">Start Recording</button>
+    
+    <div id="output">Transcribed text will appear here.</div>
+    <div id="summary">Summary will appear here.</div>
+    <div id="expanded">Expanded ideas will appear here.</div>
+    <div id="concept-map">Concept map will appear here.</div>
 
-    <!-- Icons Section -->
-    <div class="icons">
-        <div class="icon-container">
-            <div class="icon">🎤</div>
-        </div>
-        <div class="icon-container">
-            <div class="icon">🔄</div>
-        </div>
-        <div class="icon-container">
-            <div class="icon">🌍</div>
-        </div>
-    </div>
+    <script>
+        // Step 1: Implement Speech-to-Text (Whisper)
 
-    <!-- Built With + Working Toward Visual Language Input -->
-    <div class="built-with">
-        built with Whisper & Mistral AI  
-        <br>
-        [working toward visual language input beginning with American Sign Language]
-    </div>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.lang = 'en-US';
 
+        // When the user clicks the button to start speaking
+        document.getElementById('start-recording').addEventListener('click', () => {
+            recognition.start();
+            console.log('Recording started');
+            updateStatus("Listening...");
+        });
+
+        // Capture results and display in real-time
+        recognition.onresult = function(event) {
+            const transcript = event.results[event.results.length - 1][0].transcript;
+            document.getElementById('output').innerText = `You said: ${transcript}`;
+
+            // Step 2: Pass the transcription to Mistral for summarization and expansion
+            processTranscription(transcript);
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            updateStatus("Error: " + event.error);
+        };
+
+        // Function to handle the transcription process
+        function processTranscription(text) {
+            // Step 2a: Summarize the transcribed text
+            const summarizedText = summarizeText(text);
+            // Step 2b: Expand on the transcribed idea
+            const expandedText = expandText(summarizedText);
+
+            // Display summarized and expanded text
+            document.getElementById('summary').innerText = `Summary: ${summarizedText}`;
+            document.getElementById('expanded').innerText = `Expanded: ${expandedText}`;
+
+            // Step 3: Generate Concept Map from expanded text
+            generateConceptMap(expandedText);
+        }
+
+        // Placeholder: Summarize the text using Mistral
+        function summarizeText(text) {
+            // Call Mistral AI API for summarization (Placeholder)
+            return `Summarized: ${text.slice(0, 50)}...`; // Simple truncation for demo
+        }
+
+        // Placeholder: Expand the idea using Mistral
+        function expandText(text) {
+            // Call Mistral AI API for expansion (Placeholder)
+            return `Expanded idea based on: ${text}`; // Simple expansion for demo
+        }
+
+        // Step 3: Concept Mapping (Related Ideas & Mind Mapping)
+        function generateConceptMap(text) {
+            // Call Mistral AI or use a logic to find related ideas (Placeholder)
+            const concepts = ["Related Concept 1", "Related Concept 2", "Related Concept 3"];
+            document.getElementById('concept-map').innerText = `Related Concepts: ${concepts.join(', ')}`;
+        }
+
+        // Step 4: Text-to-Speech with Adaptive Speed (Using Web Speech API)
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.rate = 1;  // Adjust speed dynamically based on text complexity
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Step 5: Visualize AI Process
+        function updateStatus(status) {
+            document.getElementById('output').innerText = status;
+        }
+
+    </script>
 </body>
 </html>
