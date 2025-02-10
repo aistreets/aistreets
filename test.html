@@ -23,7 +23,7 @@
             font-size: 36px;
             margin-bottom: 20px;
         }
-        #output, #status {
+        #output {
             margin-top: 20px;
             font-size: 20px;
             font-weight: bold;
@@ -64,7 +64,6 @@
         <!-- Add more languages as needed -->
     </select>
 
-    <div id="status">Click "Start Recording" to begin speaking</div>
     <div id="output"></div>
 
     <script>
@@ -90,13 +89,11 @@
 
         function processTranscription(text) {
             updateStatus("Processing...");
-
             // Translate to the selected language
             const selectedLanguage = document.getElementById('language-select').value;
             const translatedText = translateText(text, selectedLanguage);
 
             updateOutput(`Translated: ${translatedText}`);
-
             updateStatus("Done processing.");
         }
 
@@ -114,7 +111,7 @@
         }
 
         function updateStatus(status) {
-            document.getElementById('status').innerText = status;
+            // Optionally update status message if needed
         }
 
         function updateOutput(output) {
