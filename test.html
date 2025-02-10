@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Speech to Translation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 36px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #start-recording {
+            padding: 10px 20px;
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #start-recording:hover {
+            background-color: #e68900;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Speech to Translation</h1>
+    <p>Speak into the app → Instant translation → Supports 96 languages</p>
+    
+    <button id="start-recording">Start Recording</button>
+    
+    <div id="output"></div>
+
+    <script src="test.js"></script>
+</body>
+</html>
