@@ -51,7 +51,6 @@
 <body>
 
     <h1>Speak into the app → Instant translation → Supports <span id="language-count"></span> languages</h1>
-    <p>Speak into the app → Instant translation → Supports 51 languages</p>
     
     <button id="start-recording">Start Recording</button>
 
@@ -123,7 +122,6 @@
 
         recognition.onresult = function(event) {
             const transcript = event.results[event.results.length - 1][0].transcript;
-            updateOutput(`You said: ${transcript}`);
             processTranscription(transcript);
         };
 
@@ -133,33 +131,28 @@
 
         function processTranscription(text) {
             updateStatus("Processing...");
-            // Translate to the selected language
             const selectedLanguage = document.getElementById('language-select').value;
-            const translatedText = translateText(text, selectedLanguage);
-
-            updateOutput(`Translated: ${translatedText}`);
-            speakText(translatedText);
-
-            updateStatus("Done processing.");
-        }
-
-        function translateText(text, targetLanguage) {
-            if (targetLanguage === 'es') {
-                return `Traducción al español: ${text}`;
-            } else if (targetLanguage === 'fr') {
-                return `Traduction en français: ${text}`;
-            } else if (targetLanguage === 'de') {
-                return `Übersetzung auf Deutsch: ${text}`;
-            } else if (targetLanguage === 'it') {
-                return `Traduzione in italiano: ${text}`;
-            } else if (targetLanguage === 'af') {
-                return `Afrikaanse vertaling: ${text}`;
-            }
-            return text; // Default to original text if no translation is available
+            
+            // Send the transcription to the backend for translation
+            fetch(`/translate`, {  // Assuming you have an endpoint for translation
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, targetLanguage: selectedLanguage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateOutput(data.translatedText);  // Display translated text
+                speakText(data.translatedText);     // Speak the translated text
+                updateStatus("Done processing.");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                updateStatus("Error processing.");
+            });
         }
 
         function updateStatus(status) {
-            // Optionally update status message if needed
+            document.getElementById('output').innerText = status;
         }
 
         function updateOutput(output) {
@@ -179,14 +172,11 @@
                 speech.lang = 'de-DE';
             } else if (selectedLanguage === 'it') {
                 speech.lang = 'it-IT';
-            } else if (selectedLanguage === 'af') {
-                speech.lang = 'af-ZA';
             }
 
             window.speechSynthesis.speak(speech);
         }
 
-        // Set the language count dynamically
         document.getElementById('language-count').innerText = 51;
     </script>
 </body>
