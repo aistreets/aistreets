@@ -82,7 +82,6 @@
         <option value="hi">Hindi</option>
         <option value="hu">Hungarian</option>
         <option value="id">Indonesian</option>
-        <option value="it">Italian</option>
         <option value="ja">Japanese</option>
         <option value="jw">Javanese</option>
         <option value="ko">Korean</option>
@@ -153,6 +152,8 @@
                 return `Übersetzung auf Deutsch: ${text}`;
             } else if (targetLanguage === 'it') {
                 return `Traduzione in italiano: ${text}`;
+            } else if (targetLanguage === 'af') {
+                return `Afrikaanse vertaling: ${text}`;
             }
             return text; // Default to original text if no translation is available
         }
@@ -178,6 +179,8 @@
                 speech.lang = 'de-DE';
             } else if (selectedLanguage === 'it') {
                 speech.lang = 'it-IT';
+            } else if (selectedLanguage === 'af') {
+                speech.lang = 'af-ZA';
             }
 
             window.speechSynthesis.speak(speech);
