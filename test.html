@@ -152,11 +152,11 @@
             } else if (targetLanguage === 'af') {
                 return `${text}`;
             }
-            return text; // Default to original text
+            return text; // Default to original text if no translation is available
         }
 
         function updateStatus(status) {
-            // Optionally update status message if needed
+            document.getElementById('output').innerText = status;
         }
 
         function updateOutput(output) {
@@ -167,7 +167,6 @@
             const speech = new SpeechSynthesisUtterance(text);
             const selectedLanguage = document.getElementById('language-select').value;
 
-            // Set language for speech synthesis
             if (selectedLanguage === 'es') {
                 speech.lang = 'es-ES';
             } else if (selectedLanguage === 'fr') {
