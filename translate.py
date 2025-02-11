@@ -1,45 +1,28 @@
-from transformers import MarianMTModel, MarianTokenizer
+from googletrans import Translator  # Google Translate library
 from flask import Flask, request, jsonify
-from langdetect import detect  # Import langdetect for language detection
 
 app = Flask(__name__)
 
-# Function to load MarianMT model
-def load_model(target_language):
-    model_name = f'Helsinki-NLP/opus-mt-en-{target_language}'  # Translate from detected language to target_language
-    model = MarianMTModel.from_pretrained(model_name)
-    tokenizer = MarianTokenizer.from_pretrained(model_name)
-    return model, tokenizer
+# Initialize the Translator object from googletrans
+translator = Translator()
 
 # Route to handle translation
 @app.route('/translate', methods=['POST'])
 def translate():
     data = request.get_json()
-    text = data['text']
-    target_language = data['targetLanguage']
+    text = data['text']  # Get the text from the frontend
+    target_language = data['targetLanguage']  # Get the target language
 
-    # Detect the language of the input text
-    detected_language = detect(text)
-
-    # Allowed languages: Arabic, English, French, Mandarin, Portuguese, Spanish
-    allowed_languages = ['ar', 'en', 'fr', 'zh', 'pt', 'es']
-    if detected_language not in allowed_languages:
-        return jsonify({"error": "Language not supported for translation."})
-
-    model, tokenizer = load_model(target_language)
-
-    # Encode and translate the text
-    inputs = tokenizer.encode(text, return_tensors="pt")
-    translated = model.generate(inputs, max_length=100)
-    translated_text = tokenizer.decode(translated[0], skip_special_tokens=True)
-
+    # Translate the text using Google Translate API
+    translated_text = translator.translate(text, dest=target_language).text
+    
     return jsonify({
-        "detectedLanguage": detected_language,
-        "translatedText": translated_text
+        "translatedText": translated_text  # Send the translated text back to the frontend
     })
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 if __name__ == '__main__':
