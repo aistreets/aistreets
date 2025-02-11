@@ -93,6 +93,9 @@
             updateStatus("Processing...");
             const selectedLanguage = document.getElementById('language-select').value;
 
+            // Log the data being sent in the POST request
+            console.log("Sending data to backend:", { text: text, targetLanguage: selectedLanguage });
+
             // Send transcription and language to the backend for translation
             fetch('/translate', {  
                 method: 'POST',
@@ -103,9 +106,10 @@
             .then(data => {
                 updateOutput(data.translatedText);  // Display translated text
                 speakText(data.translatedText);     // Speak the translated text
+                updateStatus("Done processing.");
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error:', error);  // Log the error
                 updateStatus("Error processing.");
             });
         }
