@@ -1,149 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Speech to Translation</title>
-    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            flex-direction: column;
-        }
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        #output {
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-        #start-recording {
-            padding: 15px 30px;
-            background-color: #ff9900;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        #start-recording:hover {
-            background-color: #e68900;
-        }
-        select {
-            padding: 5px 10px;
-            margin-top: 15px;
-            font-size: 16px;
-        }
-    </style>
-</head>
-<body>
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.continuous = true;  // Keep continuous listening on
+recognition.lang = 'en-US';  // Default transcription language
 
-    <h1>Speak into the app → Instant translation → Supports <span id="language-count"></span> languages</h1>
-    
-    <button id="start-recording">Start Recording</button>
+let isListening = false;
 
-    <!-- Language Selection -->
-    <select id="language-select">
-        <option value="ar">Arabic</option>
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="zh">Mandarin</option>
-        <option value="pt">Portuguese</option>
-        <option value="es">Spanish</option>
-    </select>
+// When the user clicks the button to start speaking
+document.getElementById('start-recording').addEventListener('click', () => {
+    if (!isListening) {
+        recognition.start();
+        updateStatus("Listening...");
+        isListening = true;
+    }
+});
 
-    <div id="output"></div>
+// When speech is transcribed
+recognition.onresult = function(event) {
+    const transcript = event.results[event.results.length - 1][0].transcript;
+    processTranscription(transcript);
+};
 
-    <script>
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.continuous = true;  // Allow continuous listening
-        recognition.lang = 'en-US';  // Set default language for transcription
+// Stop listening when recognition ends
+recognition.onend = function() {
+    if (isListening) {
+        updateStatus("Stopped listening.");
+        isListening = false;
+    }
+};
 
-        // When the user clicks the button to start speaking
-        document.getElementById('start-recording').addEventListener('click', () => {
-            recognition.start();
-            updateStatus("Listening...");
-        });
+// Process transcription and send to backend for translation
+function processTranscription(text) {
+    updateStatus("Processing...");
+    const selectedLanguage = document.getElementById('language-select').value;
 
-        // Handle speech result (each time a chunk of speech is transcribed)
-        recognition.onresult = function(event) {
-            const transcript = event.results[event.results.length - 1][0].transcript;
-            processTranscription(transcript);  // Send each chunk for processing and translation
-        };
+    // Send transcription to the backend for translation
+    fetch('/translate', {  
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, targetLanguage: selectedLanguage })
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateOutput(data.translatedText);  // Display translated text
+        speakText(data.translatedText);     // Speak the translated text
+        updateStatus("Done processing.");
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        updateStatus("Error processing.");
+    });
+}
 
-        // Handle when recognition stops (end of speech)
-        recognition.onend = function() {
-            updateStatus("Stopped listening.");
-        };
+function updateStatus(status) {
+    document.getElementById('output').innerText = status;
+}
 
-        // Process transcription and send it to backend for translation
-        function processTranscription(text) {
-            updateStatus("Processing...");
-            const selectedLanguage = document.getElementById('language-select').value;
+function updateOutput(output) {
+    document.getElementById('output').innerText = output;
+}
 
-            // Log the data being sent in the POST request
-            console.log("Sending data to backend:", { text: text, targetLanguage: selectedLanguage });
+function speakText(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    const selectedLanguage = document.getElementById('language-select').value;
 
-            // Send transcription and language to the backend for translation
-            fetch('/translate', {  
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: text, targetLanguage: selectedLanguage })
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateOutput(data.translatedText);  // Display translated text
-                speakText(data.translatedText);     // Speak the translated text
-                updateStatus("Done processing.");
-            })
-            .catch(error => {
-                console.error('Error:', error);  // Log the error
-                updateStatus("Error processing.");
-            });
-        }
+    // Set language for speech synthesis
+    if (selectedLanguage === 'es') {
+        speech.lang = 'es-ES';
+    } else if (selectedLanguage === 'fr') {
+        speech.lang = 'fr-FR';
+    } else if (selectedLanguage === 'de') {
+        speech.lang = 'de-DE';
+    } else if (selectedLanguage === 'it') {
+        speech.lang = 'it-IT';
+    } else if (selectedLanguage === 'af') {
+        speech.lang = 'af-ZA';
+    }
 
-        function updateStatus(status) {
-            document.getElementById('output').innerText = status;
-        }
+    window.speechSynthesis.speak(speech);
+}
 
-        function updateOutput(output) {
-            document.getElementById('output').innerText = output;
-        }
-
-        // Function to speak the translated text out loud
-        function speakText(text) {
-            const speech = new SpeechSynthesisUtterance(text);
-            const selectedLanguage = document.getElementById('language-select').value;
-
-            // Set language for speech synthesis
-            if (selectedLanguage === 'es') {
-                speech.lang = 'es-ES';
-            } else if (selectedLanguage === 'fr') {
-                speech.lang = 'fr-FR';
-            } else if (selectedLanguage === 'de') {
-                speech.lang = 'de-DE';
-            } else if (selectedLanguage === 'it') {
-                speech.lang = 'it-IT';
-            } else if (selectedLanguage === 'af') {
-                speech.lang = 'af-ZA';
-            }
-
-            window.speechSynthesis.speak(speech);
-        }
-
-        document.getElementById('language-count').innerText = 6; // Update the language count to 6
-    </script>
-</body>
-</html>
+document.getElementById('language-count').innerText = 6;  // Set language count
