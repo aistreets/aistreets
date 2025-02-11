@@ -1,38 +1,11 @@
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.continuous = true;  // Keep continuous listening on
-recognition.lang = 'en-US';  // Default transcription language
-
-let isListening = false;
-
-// When the user clicks the button to start speaking
-document.getElementById('start-recording').addEventListener('click', () => {
-    if (!isListening) {
-        recognition.start();
-        updateStatus("Listening...");
-        isListening = true;
-    }
-});
-
-// When speech is transcribed
-recognition.onresult = function(event) {
-    const transcript = event.results[event.results.length - 1][0].transcript;
-    processTranscription(transcript);
-};
-
-// Stop listening when recognition ends
-recognition.onend = function() {
-    if (isListening) {
-        updateStatus("Stopped listening.");
-        isListening = false;
-    }
-};
-
-// Process transcription and send to backend for translation
 function processTranscription(text) {
     updateStatus("Processing...");
     const selectedLanguage = document.getElementById('language-select').value;
 
-    // Send transcription to the backend for translation
+    // Log the data being sent to the backend
+    console.log("Sending data to backend:", { text: text, targetLanguage: selectedLanguage });
+
+    // Send transcription and language to the backend for translation
     fetch('/translate', {  
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,34 +18,11 @@ function processTranscription(text) {
         updateStatus("Done processing.");
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error:', error);  // Log the error
         updateStatus("Error processing.");
     });
 }
 
-function updateStatus(status) {
-    document.getElementById('output').innerText = status;
-}
-
-function updateOutput(output) {
-    document.getElementById('output').innerText = output;
-}
-
-function speakText(text) {
-    const speech = new SpeechSynthesisUtterance(text);
-    const selectedLanguage = document.getElementById('language-select').value;
-
-    // Set language for speech synthesis
-    if (selectedLanguage === 'es') {
-        speech.lang = 'es-ES';
-    } else if (selectedLanguage === 'fr') {
-        speech.lang = 'fr-FR';
-    } else if (selectedLanguage === 'de') {
-        speech.lang = 'de-DE';
-    } else if (selectedLanguage === 'it') {
-        speech.lang = 'it-IT';
-    } else if (selectedLanguage === 'af') {
-        speech.lang = 'af-ZA';
     }
 
     window.speechSynthesis.speak(speech);
